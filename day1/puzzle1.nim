@@ -38,7 +38,7 @@ try:
       if currentCalories > maxCalories:
         maxElf = currentElf
         maxCalories = currentCalories
-      currentElf += 1
+      inc currentElf
       currentCalories = 0
       continue
 
