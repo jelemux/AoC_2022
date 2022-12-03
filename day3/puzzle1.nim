@@ -1,12 +1,6 @@
 import strutils
 import std/sets
-
-proc getPriority(item: char): int =
-  if item.isUpperAscii:
-    result = ord(item) - 38
-  else:
-    result = ord(item) - 96
-  echo item, " : ", ord(item), " : ", result
+import priority
 
 try:
   let input = open("day3/input.txt")
