@@ -13,7 +13,8 @@ proc fromOpponent*(input: string): Shape =
   of "C":
     return Scissors
   else:
-    raise newException(ShapeNotMatching, fmt"Own Shape '{input}' does not match any of A, B, C")
+    raise newException(ShapeNotMatching,
+        fmt"Own Shape '{input}' does not match any of A, B, C")
 
 proc fromOwn*(input: string): Shape =
   case input
@@ -24,7 +25,8 @@ proc fromOwn*(input: string): Shape =
   of "Z":
     return Scissors
   else:
-    raise newException(ShapeNotMatching, fmt"Opponent Shape '{input}' does not match any of X, Y, Z")
+    raise newException(ShapeNotMatching,
+        fmt"Opponent Shape '{input}' does not match any of X, Y, Z")
 
 proc scoreForShape*(shape: Shape): int =
   case shape
@@ -35,21 +37,22 @@ proc scoreForShape*(shape: Shape): int =
   of Scissors:
     return 3
 
-proc scoreForOutcome*(opponent, own : Shape): int =
+proc scoreForOutcome*(opponent, own: Shape): int =
   if own == opponent:
     return 3
 
-  if (scoreForShape(own) == scoreForShape(opponent)+1 and scoreForShape(opponent) >= 1) or
+  if (scoreForShape(own) == scoreForShape(opponent)+1 and scoreForShape(
+      opponent) >= 1) or
      (scoreForShape(own) == 1 and scoreForShape(opponent) == 3):
     return 6
 
   return 0
 
 
-proc scoreForRound*(opponent, own : Shape): int =
+proc scoreForRound*(opponent, own: Shape): int =
   return scoreForShape(own) + scoreForOutcome(opponent, own)
 
-proc scoreForRoundWithRaw*(opponent, own : string): int =
+proc scoreForRoundWithRaw*(opponent, own: string): int =
   let ownShape = fromOwn(own)
   let opponentShape = fromOpponent(opponent)
   result = scoreForRound(opponentShape, ownShape)

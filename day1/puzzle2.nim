@@ -6,8 +6,8 @@ type
 
 try:
   let elvesRaw = readFile("day1/input.txt")
-      .strip()
-      .split("\n\n")
+    .strip()
+    .split("\n\n")
 
   var top3Elves = [new(Elf), new(Elf), new(Elf)]
   var top3Calories = 0
@@ -28,9 +28,10 @@ try:
 
       top3Calories += top3Elves[i].calories
 
-  echo "Top 3 Elves carrying the most: ", top3Elves[0].number, ", ", top3Elves[1].number, ", ", top3Elves[2].number, " with ", top3Calories, " calories"
+  echo "Top 3 Elves carrying the most: ", top3Elves[0].number, ", ", top3Elves[
+      1].number, ", ", top3Elves[2].number, " with ", top3Calories, " calories"
 except IOError:
   let
-      e = getCurrentException()
-      msg = getCurrentExceptionMsg()
+    e = getCurrentException()
+    msg = getCurrentExceptionMsg()
   echo "Got exception ", repr(e), " with message ", msg

@@ -37,6 +37,6 @@ try:
   echo "Total score is: ", totalScore
 except Exception:
   let
-      e = getCurrentException()
-      msg = getCurrentExceptionMsg()
+    e = getCurrentException()
+    msg = getCurrentExceptionMsg()
   echo "Got exception ", repr(e), " with message ", msg

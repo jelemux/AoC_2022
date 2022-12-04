@@ -19,6 +19,6 @@ try:
   echo "Total sum of priorities is: ", prioritySum
 except Exception:
   let
-      e = getCurrentException()
-      msg = getCurrentExceptionMsg()
+    e = getCurrentException()
+    msg = getCurrentExceptionMsg()
   echo "Got exception ", repr(e), " with message ", msg

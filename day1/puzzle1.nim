@@ -2,8 +2,8 @@ import strutils
 
 try:
   let elvesRaw = readFile("day1/input.txt")
-      .strip()
-      .split("\n\n")
+    .strip()
+    .split("\n\n")
 
   var maxElf: int
   var maxCalories = 0
@@ -20,8 +20,8 @@ try:
   echo "Elf carrying the most: ", maxElf, " with ", maxCalories, " calories"
 except IOError:
   let
-      e = getCurrentException()
-      msg = getCurrentExceptionMsg()
+    e = getCurrentException()
+    msg = getCurrentExceptionMsg()
   echo "Got exception ", repr(e), " with message ", msg
 
 # alternative solution
@@ -47,6 +47,6 @@ try:
   echo "Elf carrying the most: ", maxElf, " with ", maxCalories, " calories"
 except IOError:
   let
-      e = getCurrentException()
-      msg = getCurrentExceptionMsg()
+    e = getCurrentException()
+    msg = getCurrentExceptionMsg()
   echo "Got exception ", repr(e), " with message ", msg
