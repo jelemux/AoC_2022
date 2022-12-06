@@ -8,8 +8,7 @@ try:
   for i in 0 ..< input.len-4:
     let sectionToObserve = input[i ..< i+4]
     if sectionToObserve.deduplicate().len == 4:
-      echo sectionToObserve
-      echo sectionToObserve.deduplicate()
+      echo "Marker: ", sectionToObserve
       charsBeforeStart = i+4
       break
 
