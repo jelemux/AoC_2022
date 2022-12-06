@@ -6,10 +6,10 @@ try:
 
   var cargoHold = parseCargoHold(input[0])
   for step in parseSteps(input[1]):
-    cargoHold.sequentialRearrange(step)
+    cargoHold.simultanRearrange(step)
 
   var topCrates = ""
-  for crate in cargoHold.cargo.topCrates():
+  for crate in cargoHold.topCrates():
     topCrates.add(crate)
   echo "Top crates after rearrangment: ", topCrates
 except Exception:

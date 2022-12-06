@@ -8,24 +8,45 @@ type
   Stack* = seq[Crate]
   Cargo* = seq[Stack]
   CargoHold* = ref object of RootObj
-    cargo*: Cargo
+    cargo: Cargo
   Step* = object
-    amount,src,dest: int
+    amount, src, dest: int
 
-method rearrange*(cargoHold: CargoHold, step: Step) {.base.} =
-  for i in 0 ..< step.amount:
-    var crateToMove = cargoHold.cargo[step.src-1][^1]
-    cargoHold.cargo[step.src-1].delete(cargoHold.cargo[step.src-1].len - 1)
+proc getLastFrom*(cargoHold: CargoHold, stackNumber: int;
+    beginningWith = ^1): seq[Crate] =
+  return cargoHold.cargo[stackNumber-1][beginningWith .. ^1]
 
-    cargoHold.cargo[step.dest-1].add(crateToMove)
+method deleteFrom*(cargoHold: CargoHold, stackNumber: int;
+    beginningWith = ^1) {.base.} =
+  for _ in 1 .. int(beginningWith):
+    cargoHold.cargo[stackNumber-1].delete(cargoHold.cargo[stackNumber-1].len - 1)
 
-method rearrange*(cargoHold: CargoHold, steps: seq[Step]) {.base.} =
+method addTo*(cargoHold: CargoHold, stackNumber: int, crates: seq[
+    Crate]) {.base.} =
+  cargoHold.cargo[stackNumber-1].add(crates)
+
+method sequentialRearrange*(cargoHold: CargoHold, step: Step) {.base.} =
+  for _ in 0 ..< step.amount:
+    let crateToMove = cargoHold.getLastFrom(step.src)
+    cargoHold.deleteFrom(step.src)
+    cargoHold.addTo(step.dest, crateToMove)
+
+method sequentialRearrange*(cargoHold: CargoHold, steps: seq[Step]) {.base.} =
   for step in steps:
-    cargoHold.rearrange(step)
+    cargoHold.sequentialRearrange(step)
 
-proc topCrates*(cargoHold: Cargo): seq[Crate] =
-  var topCrates = newSeq[Crate](cargoHold.len)
-  for stackIdx, stack in cargoHold:
+method simultanRearrange*(cargoHold: CargoHold, step: Step) {.base.} =
+  let cratesToMove = cargoHold.getLastFrom(step.src, ^step.amount)
+  cargoHold.deleteFrom(step.src, ^step.amount)
+  cargoHold.addTo(step.dest, cratesToMove)
+
+method simultanRearrange*(cargoHold: CargoHold, steps: seq[Step]) {.base.} =
+  for step in steps:
+    cargoHold.simultanRearrange(step)
+
+proc topCrates*(cargoHold: CargoHold): seq[Crate] =
+  var topCrates = newSeq[Crate](cargoHold.cargo.len)
+  for stackIdx, stack in cargoHold.cargo:
     topCrates[stackIdx] = stack[stack.len-1]
 
   return topCrates
