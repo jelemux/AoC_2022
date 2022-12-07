@@ -5,4 +5,3 @@ proc getPriority*(item: char): int =
     result = ord(item) - 38
   else:
     result = ord(item) - 96
-  echo item, " : ", ord(item), " : ", result
