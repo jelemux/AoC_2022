@@ -70,24 +70,16 @@ method readSubDirs(currentDir: Dir, history: seq[string]) {.base.} =
   let command = parseCommand(history[1])
   case command.args[0]
   of "cd":
-    echo "cwd ", currentDir.name
-    echo "cd ", command.args[1]
     currentDir
         .cd(command.args[1])
         .readSubDirs(history[1 .. ^1])
   of "ls":
-    echo "ls ", currentDir.name
     let listOutput = parseListOutput(command.outputLines, currentDir)
-    echo "files:"
     for file in listOutput.files:
-      echo "  ", file.name
       currentDir.createFile(file)
-    echo "dirs:"
     for dir in listOutput.dirs:
-      echo "  ", dir.name
       currentDir.createChild(dir)
     currentDir.readSubDirs(history[1 .. ^1])
-  echo "----"
 
 proc readFromHistory*(history: string): Dir =
   var rootDir = Dir(name: "/")
@@ -112,7 +104,6 @@ proc size(dir: Dir): Natural =
     result += child.size()
 
 proc sumSizeOfDirsWithSizeNotMoreThan100_000*(dir: Dir): Natural =
-  echo dir.allSizes()
   for size in dir.allSizes():
     if size <= 100_000:
       result += size
