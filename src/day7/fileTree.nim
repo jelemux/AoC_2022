@@ -129,8 +129,9 @@ proc min(s: seq[int]): int =
   return currentMin
 
 proc findSizeOfDirToDelete*(dir: Dir): Natural =
-  let sizes = dir.allSizes
-  let spaceToFree = totalSpace - sizes[^1]
+  let sizes = dir.allSizes()
+  let freeSpace = totalSpace - sizes[^1]
+  let spaceToFree = neededSpace - freeSpace
 
   var deletionCandidates: seq[Natural]
   for size in sizes:
