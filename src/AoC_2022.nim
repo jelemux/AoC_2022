@@ -33,3 +33,5 @@ when isMainModule:
   day6puzzle2()
   echo "Day7 Puzzle 1:"
   day7puzzle1()
+  echo "Day7 Puzzle 2:"
+  day7puzzle2()

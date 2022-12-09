@@ -116,3 +116,25 @@ proc sumSizeOfDirsWithSizeNotMoreThan100_000*(dir: Dir): Natural =
   for size in dir.allSizes():
     if size <= 100_000:
       result += size
+
+const totalSpace = 70_000_000
+const neededSpace = 30_000_000
+
+proc min(s: seq[int]): int =
+  var currentMin = s[0]
+  for x in s:
+    if x < currentMin:
+      currentMin = x
+
+  return currentMin
+
+proc findSizeOfDirToDelete*(dir: Dir): Natural =
+  let sizes = dir.allSizes
+  let spaceToFree = totalSpace - sizes[^1]
+
+  var deletionCandidates: seq[Natural]
+  for size in sizes:
+    if size >= spaceToFree:
+      deletionCandidates.add(size)
+
+  return min(deletionCandidates)
