@@ -5,6 +5,7 @@ import day4
 import day5
 import day6
 import day7
+import day8
 
 when isMainModule:
   echo "Day1 Puzzle 1:"
@@ -35,3 +36,5 @@ when isMainModule:
   day7puzzle1()
   echo "Day7 Puzzle 2:"
   day7puzzle2()
+  echo "Day8 Puzzle 1:"
+  day8puzzle1()
