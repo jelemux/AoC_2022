@@ -1,12 +1,14 @@
 import std/strutils
 import std/sequtils
 import std/strformat
+import std/sets
 
 type
   TreePatch* = object
     columnCount: Natural
     rowCount: Natural
     data: seq[seq[Natural]]
+  Tree = tuple[row, column: Natural]
 
 proc `[]=`(treePatch: var TreePatch, row, column, value: Natural) =
   if row > treePatch.rowCount-1:
@@ -30,28 +32,48 @@ proc readTreePatch*(input: string): TreePatch =
   return treePatch
 
 proc countVisibleTrees*(treePatch: TreePatch): Natural =
-  var visibleTreeCount: Natural = 0
+  var
+    visibleTreeCount: Natural = 0
+    # Necessary for filtering out duplicates
+    visibleTrees: HashSet[Tree]
 
-  var tallestTreesInColumn = newSeq[Natural](treePatch.columnCount)
-  var tallestTreesInColumnInverted = newSeq[Natural](treePatch.columnCount)
+    tallestTreesInColumn = newSeq[Natural](treePatch.columnCount)
+    tallestTreesInColumnInverted = newSeq[Natural](treePatch.columnCount)
+
   for rowIdx in Natural(0) ..< treePatch.rowCount:
-    var tallestTreeInRow = 0
-    var tallestTreeInRowInverted = 0
+    var
+      tallestTreeInRow = 0
+      tallestTreeInRowInverted = 0
     for columnIdx in  Natural(0) ..< treePatch.columnCount:
       let tree = treePatch[rowIdx, columnIdx]
       if tree > tallestTreeInRow:
-        inc visibleTreeCount
         tallestTreeInRow = tree
+        let visibleTree = (row: Natural(rowIdx), column: Natural(columnIdx))
+        if not visibleTrees.contains(visibleTree):
+          visibleTrees.incl(visibleTree)
+          inc visibleTreeCount
       if tree > tallestTreesInColumn[columnIdx]:
-        inc visibleTreeCount
         tallestTreesInColumn[columnIdx] = tree
+        let visibleTree = (row: Natural(rowIdx), column: Natural(columnIdx))
+        if not visibleTrees.contains(visibleTree):
+          visibleTrees.incl(visibleTree)
+          inc visibleTreeCount
 
-      let treeInverted = treePatch[(treePatch.rowCount-1) - rowIdx, (treePatch.columnCount-1) - columnIdx]
+      let
+        invertedRowIdx = (treePatch.rowCount-1) - rowIdx
+        invertedColumnIdx = (treePatch.columnCount-1) - columnIdx
+        treeInverted = treePatch[invertedRowIdx, invertedColumnIdx]
       if treeInverted > tallestTreeInRowInverted:
-        inc visibleTreeCount
         tallestTreeInRowInverted = treeInverted
-      if treeInverted > tallestTreesInColumnInverted[(treePatch.columnCount-1) - columnIdx]:
-        inc visibleTreeCount
-        tallestTreesInColumnInverted[(treePatch.columnCount-1) - columnIdx] = treeInverted
+        let visibleTree = (row: Natural(invertedRowIdx), column: Natural(invertedColumnIdx))
+        if not visibleTrees.contains(visibleTree):
+          visibleTrees.incl(visibleTree)
+          inc visibleTreeCount
+      if treeInverted > tallestTreesInColumnInverted[invertedColumnIdx]:
+        tallestTreesInColumnInverted[invertedColumnIdx] = treeInverted
+        let visibleTree = (row: Natural(invertedRowIdx), column: Natural(invertedColumnIdx))
+        if not visibleTrees.contains(visibleTree):
+          visibleTrees.incl(visibleTree)
+          inc visibleTreeCount
 
   return visibleTreeCount
