@@ -51,13 +51,13 @@ proc parseCommand(raw: string): Command =
 
   return Command(args: args, outputLines: output)
 
-proc parseListOutput(lsOutput: seq[string]): tuple[files: seq[File], dirs: seq[Dir]] =
+proc parseListOutput(lsOutput: seq[string], parent: Dir): tuple[files: seq[File], dirs: seq[Dir]] =
   for line in lsOutput:
     if line == "":
       continue
     let fileOrDirInfo = line.split(' ')
     if fileOrDirInfo[0] == "dir":
-      let dir = Dir(name: fileOrDirInfo[1])
+      let dir = Dir(name: fileOrDirInfo[1], parent: parent)
       result.dirs.add(dir)
     else:
       let size = parseInt(fileOrDirInfo[0])
@@ -65,30 +65,29 @@ proc parseListOutput(lsOutput: seq[string]): tuple[files: seq[File], dirs: seq[D
       result.files.add(file)
 
 method readSubDirs(currentDir: Dir, history: seq[string]) {.base.} =
-  if history.len < 1:
+  if history.len < 2:
     return
-  let newHistory = history[1 .. ^1]
-  echo "History: ", newHistory[0 .. 2]
-  for rawCommand in newHistory:
-    let command = parseCommand(rawCommand)
-    case command.args[0]
-    of "cd":
-      echo "cd ", command.args[1]
-      currentDir.cd(command.args[1])
-          .readSubDirs(newHistory)
-      break
-    of "ls":
-      echo "ls ", currentDir.name
-      let listOutput = parseListOutput(command.outputLines)
-      echo "files:"
-      for file in listOutput.files:
-        echo "  ", file.name
-        currentDir.createFile(file)
-      echo "dirs:"
-      for dir in listOutput.dirs:
-        echo "  ", dir.name
-        currentDir.createChild(dir)
-    echo "----"
+  let command = parseCommand(history[1])
+  case command.args[0]
+  of "cd":
+    echo "cwd ", currentDir.name
+    echo "cd ", command.args[1]
+    currentDir
+        .cd(command.args[1])
+        .readSubDirs(history[1 .. ^1])
+  of "ls":
+    echo "ls ", currentDir.name
+    let listOutput = parseListOutput(command.outputLines, currentDir)
+    echo "files:"
+    for file in listOutput.files:
+      echo "  ", file.name
+      currentDir.createFile(file)
+    echo "dirs:"
+    for dir in listOutput.dirs:
+      echo "  ", dir.name
+      currentDir.createChild(dir)
+    currentDir.readSubDirs(history[1 .. ^1])
+  echo "----"
 
 proc readFromHistory*(history: string): Dir =
   var rootDir = Dir(name: "/")
